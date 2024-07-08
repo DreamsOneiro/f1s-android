@@ -3,7 +3,11 @@ package com.dreamsoneiro.f1s
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -22,6 +26,10 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 var races: List<Races>? = null
+var racesName: List<String> = ArrayList()
+var index: Int = 0
+var offset: Int = 0
+var firstRun: Boolean = true
 
 class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -37,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val buttonRefresh = findViewById<Button>(R.id.refresh_button)
+        val currentTitle = findViewById<TextView>(R.id.current_gp)
         val seasonVal = findViewById<TextView>(R.id.season_val)
         val roundVal = findViewById<TextView>(R.id.round_val)
         val raceVal = findViewById<TextView>(R.id.race_val)
@@ -53,6 +62,9 @@ class MainActivity : AppCompatActivity() {
         val qualiVal2 = findViewById<TextView>(R.id.quali_val2)
         val mainRace1 = findViewById<TextView>(R.id.main_val1)
         val mainRace2 = findViewById<TextView>(R.id.main_val2)
+        val buttonPrev = findViewById<Button>(R.id.previous)
+        val buttonNext = findViewById<Button>(R.id.next)
+        val dropDownList = findViewById<Spinner>(R.id.drop_down_list)
 
         fun requestData() {
             if (races == null) {
@@ -60,34 +72,26 @@ class MainActivity : AppCompatActivity() {
                 val url = "https://ergast.com/api/f1/current.json"
                 val request = Request.Builder().url(url).build()
 
-                val mapper = jacksonObjectMapper()
                 try {
                     client.newCall(request).execute().use { response ->
                         if (!response.isSuccessful) throw IOException("Unexpected code $response")
                         races = toRaces(response.body!!.string())
+                        val mutRacesName: MutableList<String> = ArrayList()
+                        for ((i, race) in races!!.withIndex()) {
+                            mutRacesName.add("${i + 1}. ${race.circuit.location.locality}, ${race.circuit.location.country}")
+                        }
+                        racesName = mutRacesName.toList()
                     }
                 } catch (e: IOException) {
-                    val races = null
+                    races = null
                 }
-                //races = toRaces(response.body?.string() ?:"{}")
-                //client.newCall(request).enqueue(object : Callback {
-                //    override fun onFailure(call: Call, e: java.io.IOException) {
-                //        e.printStackTrace()
-                //    }
-
-                //    override fun onResponse(call: Call, response: Response) {
-                //        if (response.isSuccessful) {
-                //            races = toRaces(response.body?.string() ?:"")
-                //        }
-                //    }
-                //})
             }
         }
-        fun loadData() {
+
+        fun loadData(offset: Int) {
             if (races != null) {
                 val utc = ZoneId.of("UTC")
                 val timeNow = ZonedDateTime.now().withZoneSameInstant(utc)
-                var index = 0;
                 if (races != null) {
                     val rtFormat = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss'Z'")
                     for ((i, race) in races!!.withIndex()) {
@@ -97,9 +101,24 @@ class MainActivity : AppCompatActivity() {
                             break
                         }
                     }
-                    val race = races!![index]
+                    val race = races!![index+offset]
+
+                    if (firstRun) {
+                        runOnUiThread {
+                            val aa = ArrayAdapter (this, android.R.layout.simple_spinner_item, racesName)
+                            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                            dropDownList.adapter = aa
+                            dropDownList.setSelection(index)
+                        }
+                        firstRun = false
+                    }
 
                     runOnUiThread {
+                        currentTitle.text = if (offset != 0) {
+                            "Other GP"
+                        } else {
+                            "Current GP"
+                        }
                         seasonVal.text = "${race.season},"
                         roundVal.text = race.round
                         raceVal.text = race.raceName
@@ -133,27 +152,59 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        dropDownList.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                // make toastof name of course
+                // which is selected in spinner
+                offset = position - index
+                loadData(offset)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
         val thread1 = Thread {
             requestData()
-            loadData()
+            loadData(offset)
         }
         thread1.start()
 
         buttonRefresh.setOnClickListener {
+            offset = 0
             if (!thread1.isAlive) {
                 if (races == null) {
                     val thread2 = Thread {
                         requestData()
-                        loadData()
+                        loadData(offset)
                     }
                     thread2.start()
                 } else {
-                    loadData()
+                    loadData(offset)
                 }
             }
         }
 
+        buttonPrev.setOnClickListener {
+            if (races != null) {
+                if (((offset - 1 + index) < (races!!.size - 1)) && (offset - 1 + index >= 0)){
+                    offset -= 1
+                    dropDownList.setSelection(index + offset)
+                }
+            }
+        }
+
+        buttonNext.setOnClickListener {
+            if (races != null) {
+                if (((offset + 1 + index) < (races!!.size)) && (offset + 1 + index >= 0)){
+                    offset += 1
+                    dropDownList.setSelection(index + offset)
+                }
+            }
+        }
+
+
     }
+
 }
 
 fun toRaces(jsonStr: String): List<Races> {

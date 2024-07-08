@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">F1S</string>
+    <string name="season">Season:</string>
+    <string name="season_val">- ,</string>
+    <string name="race">Race:</string>
+    <string name="round">Round</string>
+    <string name="round_val">-</string>
+    <string name="race_val">-</string>
+    <string name="circuit">Circuit:</string>
+    <string name="circuit_val">-</string>
+    <string name="location">Location:</string>
+    <string name="location_val">-</string>
+    <string name="current_gp">Current GP</string>
+    <string name="qualifying">Qualifying</string>
+    <string name="main_race">Main Race</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="refresh_logo">Refresh Logo</string>
+    <string name="arrow_down_logo">arrow_down_logo</string>
 </resources>
