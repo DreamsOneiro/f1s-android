@@ -14,18 +14,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import okhttp3.*
 import okio.IOException
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import RaceObjects.Race
+import RaceObjects.getRaceList
+import RaceObjects.localDT
 
-var races: List<Races>? = null
+var races: List<Race>? = null
 var racesName: List<String> = ArrayList()
 var index: Int = 0
 var offset: Int = 0
@@ -68,20 +64,13 @@ class MainActivity : AppCompatActivity() {
 
         fun requestData() {
             if (races == null) {
-                val client = OkHttpClient()
-                val url = "https://ergast.com/api/f1/current.json"
-                val request = Request.Builder().url(url).build()
-
                 try {
-                    client.newCall(request).execute().use { response ->
-                        if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                        races = toRaces(response.body!!.string())
-                        val mutRacesName: MutableList<String> = ArrayList()
-                        for ((i, race) in races!!.withIndex()) {
-                            mutRacesName.add("${i + 1}. ${race.circuit.location.locality}, ${race.circuit.location.country}")
-                        }
-                        racesName = mutRacesName.toList()
+                    races = getRaceList()
+                    val mutRacesName: MutableList<String> = ArrayList()
+                    for ((i, race) in races!!.withIndex()) {
+                        mutRacesName.add("${i + 1}. ${race.locality}, ${race.country}")
                     }
+                    racesName = mutRacesName.toList()
                 } catch (e: IOException) {
                     races = null
                 }
@@ -93,10 +82,8 @@ class MainActivity : AppCompatActivity() {
                 val utc = ZoneId.of("UTC")
                 val timeNow = ZonedDateTime.now().withZoneSameInstant(utc)
                 if (races != null) {
-                    val rtFormat = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss'Z'")
                     for ((i, race) in races!!.withIndex()) {
-                        val raceTime = LocalDateTime.parse(race.date + race.time, rtFormat).atZone(utc)
-                        if (timeNow.isBefore(raceTime)) {
+                        if (timeNow.isBefore(race.mrDT)) {
                             index = i
                             break
                         }
@@ -119,34 +106,29 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             "Current GP"
                         }
-                        seasonVal.text = "${race.season},"
+                        seasonVal.text = "${race.year},"
                         roundVal.text = race.round
-                        raceVal.text = race.raceName
-                        circuitVal.text = race.circuit.circuitName
-                        locationValLocality.text = "${race.circuit.location.locality},"
-                        locationValCountry.text = race.circuit.location.country
+                        raceVal.text = race.gpName
+                        circuitVal.text = race.circuit
+                        locationValLocality.text = "${race.locality},"
+                        locationValCountry.text = race.country
                         race1.text = "FP1:"
-                        race1Val.text = race.fp1.localDT()
-                        race2.text = if (race.hasSprint()) {
-                            "SQ:"
+                        race1Val.text = localDT(race.fp1DT)
+                        if (race.hasSprint()) {
+                            race2.text = "SQ:"
+                            race2Val.text = localDT(race.sqDT)
+                            race3.text = "Sprint:"
+                            race3Val.text = localDT(race.sprintDT)
                         } else {
-                            "FP2:"
+                            race2.text = "FP2:"
+                            race2Val.text = localDT(race.fp2DT)
+                            race3.text = "FP3:"
+                            race3Val.text = localDT(race.fp3DT)
                         }
-                        race2Val.text = race.fp2.localDT()
-                        race3.text = if (race.hasSprint()) {
-                            "Sprint:"
-                        } else {
-                            "FP3:"
-                        }
-                        race3Val.text = if (race.hasSprint()) {
-                            race.sprint!!.localDT()
-                        } else {
-                            race.fp3!!.localDT()
-                        }
-                        qualiVal1.text = race.quali.localDTvar1()
-                        qualiVal2.text = race.quali.localDTvar2()
-                        mainRace1.text = race.localDTvar1()
-                        mainRace2.text = race.localDTvar2()
+                        qualiVal1.text = race.qlStrVar1()
+                        qualiVal2.text = race.qlStrVar2()
+                        mainRace1.text = race.mrStrVar1()
+                        mainRace2.text = race.mrStrVar2()
                     }
                 }
             }
@@ -179,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     thread2.start()
                 } else {
-                    loadData(offset)
+                    dropDownList.setSelection(index + offset)
                 }
             }
         }
@@ -205,127 +187,4 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-}
-
-fun toRaces(jsonStr: String): List<Races> {
-    val mapper = jacksonObjectMapper()
-    val jsonObj = mapper.readValue<Ergast>(jsonStr)
-    return jsonObj.mrData.raceTable.races
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class Ergast (
-    @JsonProperty("MRData") var mrData: MRData
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class MRData (
-    @JsonProperty("RaceTable") var raceTable: RaceTable
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class RaceTable (
-    @JsonProperty("Races") var races: List<Races>
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class Races (
-    var season: String,
-    var round: String,
-    var raceName: String,
-    @JsonProperty("Circuit") var circuit: Circuit,
-    var date: String,
-    var time: String,
-    @JsonProperty("FirstPractice") var fp1: SubRace,
-    @JsonProperty("SecondPractice") var fp2: SubRace,
-    @JsonProperty("ThirdPractice") var fp3: SubRace?,
-    @JsonProperty("Sprint") var sprint: SubRace?,
-    @JsonProperty("Qualifying") var quali: SubRace,
-) {
-    fun hasSprint(): Boolean {
-        return sprint != null
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun localDTvar1(): String {
-        val utc = ZoneId.of("UTC")
-        val localZoneId = ZonedDateTime.now().zone
-        val printFormat = DateTimeFormatter.ofPattern("eeee, MMM dd")
-        val rtFormat = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss'Z'")
-        return LocalDateTime.parse(date+time, rtFormat)
-            .atZone(utc)
-            .withZoneSameInstant(localZoneId)
-            .format(printFormat)
-            .toString()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun localDTvar2(): String {
-        val utc = ZoneId.of("UTC")
-        val localZoneId = ZonedDateTime.now().zone
-        val printFormat = DateTimeFormatter.ofPattern("h:mma '['O']'")
-        val rtFormat = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss'Z'")
-        return LocalDateTime.parse(date+time, rtFormat)
-            .atZone(utc)
-            .withZoneSameInstant(localZoneId)
-            .format(printFormat)
-            .toString()
-    }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class Circuit (
-    val circuitName: String,
-    @JsonProperty("Location") var location: Location,
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class Location (
-    var locality: String,
-    var country: String
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class SubRace (
-    var date: String,
-    var time: String
-) {
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun localDT(): String {
-        val utc = ZoneId.of("UTC")
-        val localZoneId = ZonedDateTime.now().zone
-        val printFormat = DateTimeFormatter.ofPattern("'('eee')' MMM dd | h:mma '['O']'")
-        val rtFormat = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss'Z'")
-        return LocalDateTime.parse(date+time, rtFormat)
-            .atZone(utc)
-            .withZoneSameInstant(localZoneId)
-            .format(printFormat)
-            .toString()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun localDTvar1(): String {
-        val utc = ZoneId.of("UTC")
-        val localZoneId = ZonedDateTime.now().zone
-        val printFormat = DateTimeFormatter.ofPattern("eeee, MMM dd")
-        val rtFormat = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss'Z'")
-        return LocalDateTime.parse(date+time, rtFormat)
-            .atZone(utc)
-            .withZoneSameInstant(localZoneId)
-            .format(printFormat)
-            .toString()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun localDTvar2(): String {
-        val utc = ZoneId.of("UTC")
-        val localZoneId = ZonedDateTime.now().zone
-        val printFormat = DateTimeFormatter.ofPattern("h:mma '['O']'")
-        val rtFormat = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss'Z'")
-        return LocalDateTime.parse(date+time, rtFormat)
-            .atZone(utc)
-            .withZoneSameInstant(localZoneId)
-            .format(printFormat)
-            .toString()
-    }
 }
