@@ -62,6 +62,21 @@ class MainActivity : AppCompatActivity() {
         val buttonNext = findViewById<Button>(R.id.next)
         val dropDownList = findViewById<Spinner>(R.id.drop_down_list)
 
+        fun calculate() {
+            if (races != null) {
+                val utc = ZoneId.of("UTC")
+                val timeNow = ZonedDateTime.now().withZoneSameInstant(utc)
+                if (races != null) {
+                    for ((i, race) in races!!.withIndex()) {
+                        if (timeNow.isBefore(race.mrDT)) {
+                            index = i
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
         fun requestData() {
             if (races == null) {
                 try {
@@ -74,68 +89,51 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: IOException) {
                     races = null
                 }
+                calculate()
             }
         }
 
         fun loadData(offset: Int) {
-            if (races != null) {
-                val utc = ZoneId.of("UTC")
-                val timeNow = ZonedDateTime.now().withZoneSameInstant(utc)
-                if (races != null) {
-                    for ((i, race) in races!!.withIndex()) {
-                        if (timeNow.isBefore(race.mrDT)) {
-                            index = i
-                            break
-                        }
-                    }
-                    val race = races!![index+offset]
-
-                    if (firstRun) {
-                        runOnUiThread {
-                            val aa = ArrayAdapter (this, android.R.layout.simple_spinner_item, racesName)
-                            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                            dropDownList.adapter = aa
-                            dropDownList.setSelection(index)
-                        }
-                        firstRun = false
-                    }
-
-                    runOnUiThread {
-                        currentTitle.text = if (offset != 0) {
-                            "Other GP"
-                        } else {
-                            "Current GP"
-                        }
-                        seasonVal.text = "${race.year},"
-                        roundVal.text = race.round
-                        raceVal.text = race.gpName
-                        circuitVal.text = race.circuit
-                        locationValLocality.text = "${race.locality},"
-                        locationValCountry.text = race.country
-                        race1.text = "FP1:"
-                        race1Val.text = localDT(race.fp1DT)
-                        if (race.hasSprint()) {
-                            race2.text = "SQ:"
-                            race2Val.text = localDT(race.sqDT)
-                            race3.text = "Sprint:"
-                            race3Val.text = localDT(race.sprintDT)
-                        } else {
-                            race2.text = "FP2:"
-                            race2Val.text = localDT(race.fp2DT)
-                            race3.text = "FP3:"
-                            race3Val.text = localDT(race.fp3DT)
-                        }
-                        qualiVal1.text = race.qlStrVar1()
-                        qualiVal2.text = race.qlStrVar2()
-                        mainRace1.text = race.mrStrVar1()
-                        mainRace2.text = race.mrStrVar2()
-                    }
+            val race = races!![index + offset]
+            runOnUiThread {
+                currentTitle.text = if (offset != 0) {
+                    "Other GP"
+                } else {
+                    "Current GP"
                 }
+                seasonVal.text = "${race.year},"
+                roundVal.text = race.round
+                raceVal.text = race.gpName
+                circuitVal.text = race.circuit
+                locationValLocality.text = "${race.locality},"
+                locationValCountry.text = race.country
+                race1.text = "FP1:"
+                race1Val.text = localDT(race.fp1DT)
+                if (race.hasSprint()) {
+                    race2.text = "SQ:"
+                    race2Val.text = localDT(race.sqDT)
+                    race3.text = "Sprint:"
+                    race3Val.text = localDT(race.sprintDT)
+                } else {
+                    race2.text = "FP2:"
+                    race2Val.text = localDT(race.fp2DT)
+                    race3.text = "FP3:"
+                    race3Val.text = localDT(race.fp3DT)
+                }
+                qualiVal1.text = race.qlStrVar1()
+                qualiVal2.text = race.qlStrVar2()
+                mainRace1.text = race.mrStrVar1()
+                mainRace2.text = race.mrStrVar2()
             }
         }
 
-        dropDownList.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+        dropDownList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
                 // make toastof name of course
                 // which is selected in spinner
                 offset = position - index
@@ -147,7 +145,12 @@ class MainActivity : AppCompatActivity() {
 
         val thread1 = Thread {
             requestData()
-            loadData(offset)
+            runOnUiThread {
+                val aa = ArrayAdapter(this, android.R.layout.simple_spinner_item, racesName)
+                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                dropDownList.adapter = aa
+                dropDownList.setSelection(index + offset)
+            }
         }
         thread1.start()
 
@@ -161,6 +164,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     thread2.start()
                 } else {
+                    calculate()
                     dropDownList.setSelection(index + offset)
                 }
             }
@@ -168,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonPrev.setOnClickListener {
             if (races != null) {
-                if (((offset - 1 + index) < (races!!.size - 1)) && (offset - 1 + index >= 0)){
+                if (((offset - 1 + index) < (races!!.size - 1)) && (offset - 1 + index >= 0)) {
                     offset -= 1
                     dropDownList.setSelection(index + offset)
                 }
@@ -177,7 +181,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonNext.setOnClickListener {
             if (races != null) {
-                if (((offset + 1 + index) < (races!!.size)) && (offset + 1 + index >= 0)){
+                if (((offset + 1 + index) < (races!!.size)) && (offset + 1 + index >= 0)) {
                     offset += 1
                     dropDownList.setSelection(index + offset)
                 }
@@ -186,5 +190,4 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-
 }
