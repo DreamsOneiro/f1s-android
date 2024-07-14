@@ -17,4 +17,6 @@
     <string name="next">Next</string>
     <string name="refresh_logo">Refresh Logo</string>
     <string name="arrow_down_logo">arrow_down_logo</string>
+    <string name="next_button_logo">Next Button Logo</string>
+    <string name="back_button_logo">Back Button Logo</string>
 </resources>

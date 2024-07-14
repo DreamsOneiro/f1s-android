@@ -17,15 +17,14 @@ import androidx.core.view.WindowInsetsCompat
 import okio.IOException
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import RaceObjects.Race
-import RaceObjects.getRaceList
-import RaceObjects.localDT
+import raceObjects.Race
+import raceObjects.getRaceList
+import raceObjects.localDT
 
 var races: List<Race>? = null
 var racesName: List<String> = ArrayList()
 var index: Int = 0
 var offset: Int = 0
-var firstRun: Boolean = true
 
 class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -187,7 +186,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
 }

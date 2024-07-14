@@ -118,7 +118,7 @@
         android:id="@+id/current_gp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="70dp"
         android:fontFamily="sans-serif-black"
         android:text="@string/current_gp"
         android:textSize="20sp"
@@ -264,7 +264,7 @@
     <Button
         android:id="@+id/previous"
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="30dp"
         android:backgroundTint="#9F2121"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -276,12 +276,12 @@
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="@+id/imageFilterView2"
         app:layout_constraintTop_toBottomOf="@+id/imageFilterView2"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.3" />
 
     <Button
         android:id="@+id/next"
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="30dp"
         android:backgroundTint="#9F2121"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -293,31 +293,7 @@
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="@+id/imageFilterView2"
         app:layout_constraintTop_toBottomOf="@+id/imageFilterView2"
-        app:layout_constraintVertical_bias="0.25" />
-
-    <TextView
-        android:id="@+id/previous_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/previous"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/previous"
-        app:layout_constraintEnd_toEndOf="@+id/previous"
-        app:layout_constraintStart_toStartOf="@+id/previous"
-        app:layout_constraintTop_toTopOf="@+id/previous" />
-
-    <TextView
-        android:id="@+id/next_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/next"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/next"
-        app:layout_constraintEnd_toEndOf="@+id/next"
-        app:layout_constraintStart_toStartOf="@+id/next"
-        app:layout_constraintTop_toTopOf="@+id/next" />
+        app:layout_constraintVertical_bias="0.3" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -352,6 +328,30 @@
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="@+id/drop_down_list"
         app:layout_constraintTop_toTopOf="@+id/drop_down_list"
+        app:srcCompat="@android:drawable/arrow_down_float" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:rotation="90"
+        android:contentDescription="@string/next_button_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/next"
+        app:layout_constraintEnd_toEndOf="@+id/next"
+        app:layout_constraintStart_toStartOf="@+id/next"
+        app:layout_constraintTop_toTopOf="@+id/next"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:rotation="90"
+        android:contentDescription="@string/back_button_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/previous"
+        app:layout_constraintEnd_toEndOf="@+id/previous"
+        app:layout_constraintStart_toStartOf="@+id/previous"
+        app:layout_constraintTop_toTopOf="@+id/previous"
         app:srcCompat="@android:drawable/arrow_down_float" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
