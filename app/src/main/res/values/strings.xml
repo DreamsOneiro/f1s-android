@@ -19,4 +19,11 @@
     <string name="arrow_down_logo">arrow_down_logo</string>
     <string name="next_button_logo">Next Button Logo</string>
     <string name="back_button_logo">Back Button Logo</string>
+    <string name="schedules">Schedules</string>
+    <string name="position">Position</string>
+    <string name="driver">Driver</string>
+    <string name="points">Points</string>
+    <string name="gained">Gained</string>
+    <string name="driver_s_championship_standing">Driver\'s Championship Standing</string>
+    <string name="drivers">Drivers</string>
 </resources>

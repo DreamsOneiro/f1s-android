@@ -1,6 +1,7 @@
 package com.dreamsoneiro.f1s
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -59,7 +60,13 @@ class MainActivity : AppCompatActivity() {
         val mainRace2 = findViewById<TextView>(R.id.main_val2)
         val buttonPrev = findViewById<Button>(R.id.previous)
         val buttonNext = findViewById<Button>(R.id.next)
+        val standingButton = findViewById<Button>(R.id.to_standing)
         val dropDownList = findViewById<Spinner>(R.id.drop_down_list)
+
+        standingButton.setOnClickListener {
+            val intent = Intent(this, Driver::class.java)
+            startActivity(intent)
+        }
 
         fun calculate() {
             if (races != null) {
@@ -133,8 +140,6 @@ class MainActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                // make toastof name of course
-                // which is selected in spinner
                 offset = position - index
                 loadData(offset)
             }

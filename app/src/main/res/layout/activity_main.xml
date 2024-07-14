@@ -354,4 +354,25 @@
         app:layout_constraintTop_toTopOf="@+id/previous"
         app:srcCompat="@android:drawable/arrow_down_float" />
 
+    <Button
+        android:id="@+id/to_standing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginBottom="56dp"
+        android:backgroundTint="#9F2121"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/standing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/drivers"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/to_standing"
+        app:layout_constraintEnd_toEndOf="@+id/to_standing"
+        app:layout_constraintStart_toStartOf="@+id/to_standing"
+        app:layout_constraintTop_toTopOf="@+id/to_standing" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
