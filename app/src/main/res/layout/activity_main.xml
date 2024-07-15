@@ -376,11 +376,30 @@
         app:layout_constraintTop_toTopOf="@+id/to_standing" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="81dp"
-        tools:layout_editor_absoluteY="505dp" />
+        android:id="@+id/p1"
+        android:layout_width="190dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="60dp"
+        android:text="Max Verstappen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/drop_down_list" />
+
+    <TextView
+        android:id="@+id/p2"
+        android:layout_width="190dp"
+        android:layout_height="25dp"
+        android:text="Lewis Hamilton"
+        app:layout_constraintStart_toStartOf="@+id/p1"
+        tools:layout_editor_absoluteY="535dp" />
+
+    <TextView
+        android:id="@+id/p3"
+        android:layout_width="192dp"
+        android:layout_height="25dp"
+        android:text="Batman"
+        app:layout_constraintStart_toStartOf="@+id/p2"
+        tools:layout_editor_absoluteY="572dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
