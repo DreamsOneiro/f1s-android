@@ -102,8 +102,10 @@ class MainActivity : AppCompatActivity() {
         fun loadData(offset: Int) {
             val race = races!![index + offset]
             runOnUiThread {
-                currentTitle.text = if (offset != 0) {
-                    "Other GP"
+                currentTitle.text = if (offset > 0) {
+                    "Upcoming GP"
+                } else if (offset < 0){
+                    "Previous GP"
                 } else {
                     "Current GP"
                 }

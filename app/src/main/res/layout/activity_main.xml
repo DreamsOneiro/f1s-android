@@ -127,8 +127,8 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/imageFilterView2"
-        android:layout_width="352dp"
-        android:layout_height="216dp"
+        android:layout_width="345dp"
+        android:layout_height="167dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -273,10 +273,10 @@
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageFilterView2"
-        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="@+id/imageFilterView2"
         app:layout_constraintTop_toBottomOf="@+id/imageFilterView2"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.241" />
 
     <Button
         android:id="@+id/next"
@@ -290,10 +290,10 @@
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageFilterView2"
-        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintHorizontal_bias="0.836"
         app:layout_constraintStart_toStartOf="@+id/imageFilterView2"
         app:layout_constraintTop_toBottomOf="@+id/imageFilterView2"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.241" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -374,5 +374,13 @@
         app:layout_constraintEnd_toEndOf="@+id/to_standing"
         app:layout_constraintStart_toStartOf="@+id/to_standing"
         app:layout_constraintTop_toTopOf="@+id/to_standing" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="81dp"
+        tools:layout_editor_absoluteY="505dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
