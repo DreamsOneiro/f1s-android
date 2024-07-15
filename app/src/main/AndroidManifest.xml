@@ -16,6 +16,9 @@
         android:theme="@style/Theme.F1S"
         tools:targetApi="31">
         <activity
+            android:name=".Constructor"
+            android:exported="false" />
+        <activity
             android:name=".Driver"
             android:exported="false" />
         <activity

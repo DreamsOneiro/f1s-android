@@ -26,7 +26,7 @@ fun getRaceList(): List<Race> {
     return races
 }
 
-private fun requestAPI(url: String): String {
+fun requestAPI(url: String): String {
     val request = Request.Builder().url(url).build()
     var apiStr: String
     client.newCall(request).execute().use { response ->

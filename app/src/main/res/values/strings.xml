@@ -26,4 +26,6 @@
     <string name="gained">Gained</string>
     <string name="driver_s_championship_standing">Driver\'s Championship Standing</string>
     <string name="drivers">Drivers</string>
+    <string name="constructor">Constructor</string>
+    <string name="constructor_s_championship_standing">Constructor\'s Championship Standing</string>
 </resources>

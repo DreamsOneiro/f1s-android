@@ -8,32 +8,69 @@
     tools:context=".Driver">
 
     <Button
+        android:id="@+id/to_constructor"
+        android:layout_width="90dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:backgroundTint="#9F2121"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="@string/constructor"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/to_main"
+        app:layout_constraintStart_toEndOf="@+id/to_main"
+        app:layout_constraintTop_toTopOf="@+id/to_main"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/refresh_driver_button"
+        android:layout_width="61dp"
+        android:layout_height="33dp"
+        android:backgroundTint="#9F2121"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/to_main"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout"
+        app:layout_constraintVertical_bias="0.19999999" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="16dp"
+        android:layout_height="26dp"
+        android:contentDescription="@string/refresh_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/refresh_driver_button"
+        app:layout_constraintEnd_toEndOf="@+id/refresh_driver_button"
+        app:layout_constraintStart_toStartOf="@+id/refresh_driver_button"
+        app:layout_constraintTop_toTopOf="@+id/refresh_driver_button"
+        app:srcCompat="@android:drawable/ic_popup_sync" />
+
+    <Button
         android:id="@+id/to_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="35dp"
         android:layout_marginStart="44dp"
         android:layout_marginBottom="56dp"
         android:backgroundTint="#9F2121"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:text="@string/driver"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/schedule"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/schedules"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/to_main"
-        app:layout_constraintEnd_toEndOf="@+id/to_main"
-        app:layout_constraintStart_toStartOf="@+id/to_main"
-        app:layout_constraintTop_toTopOf="@+id/to_main" />
 
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="331dp"
         android:layout_height="428dp"
         android:layout_marginTop="24dp"
-        android:background="#63B7B7B7"
+        android:background="#2DDDE5F2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight="wrap_content"
@@ -45,7 +82,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#AE8B0000">
+            android:background="#92BE0000">
 
             <Space
                 android:layout_width="10dp"
@@ -58,6 +95,7 @@
                 android:fontFamily="sans-serif-black"
                 android:text="@string/position"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="16sp" />
 
             <Space
@@ -71,6 +109,7 @@
                 android:fontFamily="sans-serif-black"
                 android:text="@string/driver"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="16sp" />
 
             <Space
@@ -84,6 +123,7 @@
                 android:fontFamily="sans-serif-black"
                 android:text="@string/points"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="16sp" />
 
             <Space
@@ -97,6 +137,7 @@
                 android:fontFamily="sans-serif-black"
                 android:text="@string/gained"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="16sp" />
 
             <Space
@@ -108,7 +149,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -209,7 +250,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -310,7 +351,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -411,7 +452,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -513,7 +554,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -614,7 +655,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -715,7 +756,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -816,7 +857,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -917,7 +958,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -1018,7 +1059,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -1119,7 +1160,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
@@ -1220,7 +1261,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75771D1D">
+            android:background="#54AA4747">
 
             <Space
                 android:layout_width="10dp"
