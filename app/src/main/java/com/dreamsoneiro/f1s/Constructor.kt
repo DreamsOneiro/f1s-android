@@ -11,49 +11,47 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import standing.DriverStanding
-import standing.getDriverStandings
 import okio.IOException
+import standing.ConstructorStanding
+import standing.getConstructorStandings
 
-var drivers: List<DriverStanding>? = null
+var constructor: List<ConstructorStanding>? = null
 
 @RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("SetTextI18n")
-class Driver : AppCompatActivity() {
-    @SuppressLint("DiscouragedApi")
+@SuppressLint("DiscouragedApi")
+class Constructor : AppCompatActivity() {
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_driver)
+        setContentView(R.layout.activity_constructor)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-
         val scheduleButton = findViewById<Button>(R.id.to_main)
-        val constructorButton = findViewById<Button>(R.id.to_constructor)
-        val refreshButton = findViewById<Button>(R.id.refresh_driver_button)
+        val driverButton = findViewById<Button>(R.id.to_driver)
+        val constructorTitle = findViewById<TextView>(R.id.constructor_title)
+        val refreshButton = findViewById<Button>(R.id.refresh_button)
 
         scheduleButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
 
-        constructorButton.setOnClickListener {
-            val intent = Intent(this, Constructor::class.java)
+        driverButton.setOnClickListener {
+            val intent = Intent(this, Driver::class.java)
             startActivity(intent)
         }
 
-        val driverTitle = findViewById<TextView>(R.id.driver_title)
-
-        fun newRow(num: Int): Rows {
+        fun newRow(num: Int): ConRows {
             val id1 = resources.getIdentifier("box_${num}_1", "id", this.packageName)
             val id2 = resources.getIdentifier("box_${num}_2", "id", this.packageName)
             val id3 = resources.getIdentifier("box_${num}_3", "id", this.packageName)
             val id4 = resources.getIdentifier("box_${num}_4", "id", this.packageName)
-            val row = Rows (
+            val row = ConRows (
                 findViewById(id1),
                 findViewById(id2),
                 findViewById(id3),
@@ -62,15 +60,15 @@ class Driver : AppCompatActivity() {
             return row
         }
 
-        val rows = mutableListOf<Rows>()
-        for (i in 2..24) {
+        val rows = mutableListOf<ConRows>()
+        for (i in 2..11) {
             rows.add(newRow(i))
         }
 
         fun requestData() {
-            if (drivers == null) {
-                drivers = try {
-                    getDriverStandings()
+            if (constructor == null) {
+                constructor = try {
+                    getConstructorStandings()
                 } catch (e: IOException) {
                     null
                 }
@@ -78,16 +76,16 @@ class Driver : AppCompatActivity() {
         }
 
         fun loadData() {
-            if (drivers != null) {
+            if (constructor != null) {
                 runOnUiThread {
-                    driverTitle.text = "${drivers!![0].year} ${drivers!![0].gp}"
-                    for ((i, driver) in drivers!!.withIndex()) {
+                    constructorTitle.text = "${constructor!![0].year} ${constructor!![0].gp}"
+                    for ((i, con) in constructor!!.withIndex()) {
                         if (i <= rows.size) {
                             val row = rows[i]
-                            row.position.text = driver.position.toString()
-                            row.driver.text = driver.name
-                            row.points.text = driver.points.toString()
-                            row.gained.text = driver.gained.toString()
+                            row.position.text = con.position.toString()
+                            row.constructor.text = con.name
+                            row.points.text = con.points.toString()
+                            row.gained.text = con.gained.toString()
                         }
                     }
                 }
@@ -101,7 +99,7 @@ class Driver : AppCompatActivity() {
         thread1.start()
 
         refreshButton.setOnClickListener {
-            if (drivers == null) {
+            if (constructor == null) {
                 if (!thread1.isAlive) {
                     val thread2 = Thread {
                         requestData()
@@ -114,9 +112,9 @@ class Driver : AppCompatActivity() {
     }
 }
 
-class Rows (
+class ConRows (
     var position: TextView,
-    var driver: TextView,
+    var constructor: TextView,
     var points: TextView,
     var gained: TextView
 )

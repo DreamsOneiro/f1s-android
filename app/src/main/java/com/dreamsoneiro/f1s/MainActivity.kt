@@ -60,11 +60,17 @@ class MainActivity : AppCompatActivity() {
         val mainRace2 = findViewById<TextView>(R.id.main_val2)
         val buttonPrev = findViewById<Button>(R.id.previous)
         val buttonNext = findViewById<Button>(R.id.next)
-        val standingButton = findViewById<Button>(R.id.to_standing)
+        val driverButton = findViewById<Button>(R.id.to_driver)
+        val constructorButton = findViewById<Button>(R.id.to_constructor)
         val dropDownList = findViewById<Spinner>(R.id.drop_down_list)
 
-        standingButton.setOnClickListener {
+        driverButton.setOnClickListener {
             val intent = Intent(this, Driver::class.java)
+            startActivity(intent)
+        }
+
+        constructorButton.setOnClickListener {
+            val intent = Intent(this, Constructor::class.java)
             startActivity(intent)
         }
 
