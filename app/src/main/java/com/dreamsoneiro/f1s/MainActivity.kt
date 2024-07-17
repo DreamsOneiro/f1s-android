@@ -1,31 +1,21 @@
 package com.dreamsoneiro.f1s
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
-import android.widget.TextView
+import android.view.Window
+import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import okio.IOException
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import raceObjects.Race
-import raceObjects.getRaceList
-import raceObjects.localDT
+import androidx.fragment.app.Fragment
+import com.dreamsoneiro.f1s.fragments.Constructor
+import com.dreamsoneiro.f1s.fragments.Driver
+import com.dreamsoneiro.f1s.fragments.Schedule
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-var races: List<Race>? = null
-var racesName: List<String> = ArrayList()
-var index: Int = 0
-var offset: Int = 0
 
 class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -39,163 +29,34 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        changeStatusBarColor()
 
-        val buttonRefresh = findViewById<Button>(R.id.refresh_button)
-        val currentTitle = findViewById<TextView>(R.id.current_gp)
-        val seasonVal = findViewById<TextView>(R.id.season_val)
-        val roundVal = findViewById<TextView>(R.id.round_val)
-        val raceVal = findViewById<TextView>(R.id.race_val)
-        val circuitVal = findViewById<TextView>(R.id.circuit_val)
-        val locationValLocality = findViewById<TextView>(R.id.location_val_locality)
-        val locationValCountry = findViewById<TextView>(R.id.location_val_country)
-        val race1 = findViewById<TextView>(R.id.race1)
-        val race1Val = findViewById<TextView>(R.id.race1_val)
-        val race2 = findViewById<TextView>(R.id.race2)
-        val race2Val = findViewById<TextView>(R.id.race2_val)
-        val race3 = findViewById<TextView>(R.id.race3)
-        val race3Val = findViewById<TextView>(R.id.race3_val)
-        val qualiVal1 = findViewById<TextView>(R.id.quali_val1)
-        val qualiVal2 = findViewById<TextView>(R.id.quali_val2)
-        val mainRace1 = findViewById<TextView>(R.id.main_val1)
-        val mainRace2 = findViewById<TextView>(R.id.main_val2)
-        val buttonPrev = findViewById<Button>(R.id.previous)
-        val buttonNext = findViewById<Button>(R.id.next)
-        val driverButton = findViewById<Button>(R.id.to_driver)
-        val constructorButton = findViewById<Button>(R.id.to_constructor)
-        val dropDownList = findViewById<Spinner>(R.id.drop_down_list)
+        val scheduleFragment = Schedule()
+        val driverFragment = Driver()
+        val constructorFragment = Constructor()
+        makeCurrentFragment(scheduleFragment)
 
-        driverButton.setOnClickListener {
-            val intent = Intent(this, Driver::class.java)
-            startActivity(intent)
-        }
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
-        constructorButton.setOnClickListener {
-            val intent = Intent(this, Constructor::class.java)
-            startActivity(intent)
-        }
-
-        fun calculate() {
-            if (races != null) {
-                val utc = ZoneId.of("UTC")
-                val timeNow = ZonedDateTime.now().withZoneSameInstant(utc)
-                if (races != null) {
-                    for ((i, race) in races!!.withIndex()) {
-                        if (timeNow.isBefore(race.mrDT)) {
-                            index = i
-                            break
-                        }
-                    }
-                }
+        bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.ic_schedule -> makeCurrentFragment(scheduleFragment)
+                R.id.ic_driver -> makeCurrentFragment(driverFragment)
+                R.id.ic_constructor -> makeCurrentFragment(constructorFragment)
             }
-        }
-
-        fun requestData() {
-            if (races == null) {
-                try {
-                    races = getRaceList()
-                    val mutRacesName: MutableList<String> = ArrayList()
-                    for ((i, race) in races!!.withIndex()) {
-                        mutRacesName.add("${i + 1}. ${race.locality}, ${race.country}")
-                    }
-                    racesName = mutRacesName.toList()
-                } catch (e: IOException) {
-                    races = null
-                }
-                calculate()
-            }
-        }
-
-        fun loadData(offset: Int) {
-            val race = races!![index + offset]
-            runOnUiThread {
-                currentTitle.text = if (offset != 0) {
-                    "Other GP"
-                } else {
-                    "Current GP"
-                }
-                seasonVal.text = "${race.year},"
-                roundVal.text = race.round
-                raceVal.text = race.gpName
-                circuitVal.text = race.circuit
-                locationValLocality.text = "${race.locality},"
-                locationValCountry.text = race.country
-                race1.text = "FP1:"
-                race1Val.text = localDT(race.fp1DT)
-                if (race.hasSprint()) {
-                    race2.text = "SQ:"
-                    race2Val.text = localDT(race.sqDT)
-                    race3.text = "Sprint:"
-                    race3Val.text = localDT(race.sprintDT)
-                } else {
-                    race2.text = "FP2:"
-                    race2Val.text = localDT(race.fp2DT)
-                    race3.text = "FP3:"
-                    race3Val.text = localDT(race.fp3DT)
-                }
-                qualiVal1.text = race.qlStrVar1()
-                qualiVal2.text = race.qlStrVar2()
-                mainRace1.text = race.mrStrVar1()
-                mainRace2.text = race.mrStrVar2()
-            }
-        }
-
-        dropDownList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
-                offset = position - index
-                loadData(offset)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-
-        val thread1 = Thread {
-            requestData()
-            runOnUiThread {
-                val aa = ArrayAdapter(this, android.R.layout.simple_spinner_item, racesName)
-                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                dropDownList.adapter = aa
-                dropDownList.setSelection(index + offset)
-            }
-        }
-        thread1.start()
-
-        buttonRefresh.setOnClickListener {
-            offset = 0
-            if (!thread1.isAlive) {
-                if (races == null) {
-                    val thread2 = Thread {
-                        requestData()
-                        loadData(offset)
-                    }
-                    thread2.start()
-                } else {
-                    calculate()
-                    dropDownList.setSelection(index + offset)
-                }
-            }
-        }
-
-        buttonPrev.setOnClickListener {
-            if (races != null) {
-                if (((offset - 1 + index) < (races!!.size - 1)) && (offset - 1 + index >= 0)) {
-                    offset -= 1
-                    dropDownList.setSelection(index + offset)
-                }
-            }
-        }
-
-        buttonNext.setOnClickListener {
-            if (races != null) {
-                if (((offset + 1 + index) < (races!!.size)) && (offset + 1 + index >= 0)) {
-                    offset += 1
-                    dropDownList.setSelection(index + offset)
-                }
-            }
+            true
         }
     }
+
+    private fun makeCurrentFragment(fragment: Fragment) = supportFragmentManager.beginTransaction().apply {
+        replace(R.id.fragmentContainerView, fragment)
+        commit()
+    }
+
+    private fun changeStatusBarColor() {
+        val window: Window = window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = android.graphics.Color.parseColor("#FF1801")
+    }
+
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ic_schedule"
+        android:icon="@drawable/ic_schedule"
+        android:title="@string/schedules"/>
+
+    <item
+        android:id="@+id/ic_driver"
+        android:icon="@drawable/ic_driver"
+        android:title="@string/driver"/>
+
+    <item
+        android:id="@+id/ic_constructor"
+        android:icon="@drawable/ic_constructor"
+        android:title="@string/constructor"/>
+
+</menu>
