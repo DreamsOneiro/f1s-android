@@ -1,61 +1,50 @@
-package com.dreamsoneiro.f1s
+package com.dreamsoneiro.f1s.fragments
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.widget.Button
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import com.dreamsoneiro.f1s.R
 import okio.IOException
 import standing.ConstructorStanding
 import standing.getConstructorStandings
 
 var constructor: List<ConstructorStanding>? = null
 
-@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("DiscouragedApi")
-class Constructor : AppCompatActivity() {
+class Constructor : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_constructor, container, false)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_constructor)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val scheduleButton = findViewById<Button>(R.id.to_main)
-        val driverButton = findViewById<Button>(R.id.to_driver)
-        val constructorTitle = findViewById<TextView>(R.id.constructor_title)
-        val refreshButton = findViewById<Button>(R.id.refresh_button)
-
-        scheduleButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-
-        driverButton.setOnClickListener {
-            val intent = Intent(this, Driver::class.java)
-            startActivity(intent)
-        }
+        val constructorTitle = view.findViewById<TextView>(R.id.constructor_title)
+        val refreshButton = view.findViewById<ImageButton>(R.id.refresh_button)
 
         fun newRow(num: Int): ConRows {
-            val id1 = resources.getIdentifier("box_${num}_1", "id", this.packageName)
-            val id2 = resources.getIdentifier("box_${num}_2", "id", this.packageName)
-            val id3 = resources.getIdentifier("box_${num}_3", "id", this.packageName)
-            val id4 = resources.getIdentifier("box_${num}_4", "id", this.packageName)
+            val id1 = resources.getIdentifier("box_${num}_1", "id", activity?.packageName)
+            val id2 = resources.getIdentifier("box_${num}_2", "id", activity?.packageName)
+            val id3 = resources.getIdentifier("box_${num}_3", "id", activity?.packageName)
+            val id4 = resources.getIdentifier("box_${num}_4", "id", activity?.packageName)
             val row = ConRows (
-                findViewById(id1),
-                findViewById(id2),
-                findViewById(id3),
-                findViewById(id4),
+                view.findViewById(id1),
+                view.findViewById(id2),
+                view.findViewById(id3),
+                view.findViewById(id4),
             )
             return row
         }
@@ -77,7 +66,7 @@ class Constructor : AppCompatActivity() {
 
         fun loadData() {
             if (constructor != null) {
-                runOnUiThread {
+                activity?.runOnUiThread {
                     constructorTitle.text = "${constructor!![0].year} ${constructor!![0].gp}"
                     for ((i, con) in constructor!!.withIndex()) {
                         if (i <= rows.size) {

@@ -28,4 +28,8 @@
     <string name="drivers">Drivers</string>
     <string name="constructor">Constructor</string>
     <string name="constructor_s_championship_standing">Constructor\'s Championship Standing</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="refresh_button">Refresh image button</string>
+    <string name="back_button">Back button</string>
+    <string name="forward_button">Forward button</string>
 </resources>
