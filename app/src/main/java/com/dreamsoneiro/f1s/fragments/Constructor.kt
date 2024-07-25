@@ -55,12 +55,10 @@ class Constructor : Fragment() {
         }
 
         fun requestData() {
-            if (constructor == null) {
-                constructor = try {
-                    getConstructorStandings()
-                } catch (e: IOException) {
-                    null
-                }
+            constructor = try {
+                getConstructorStandings()
+            } catch (e: IOException) {
+                null
             }
         }
 
@@ -81,21 +79,36 @@ class Constructor : Fragment() {
             }
         }
 
+        fun clearData() {
+            if (drivers != null) {
+                activity?.runOnUiThread {
+                    constructorTitle.text = ""
+                    for (row in rows) {
+                        row.position.text = ""
+                        row.constructor.text = ""
+                        row.points.text = ""
+                        row.gained.text = ""
+                    }
+                }
+            }
+        }
+
         val thread1 = Thread {
-            requestData()
+            if (constructor == null) {
+                requestData()
+            }
             loadData()
         }
         thread1.start()
 
         refreshButton.setOnClickListener {
-            if (constructor == null) {
-                if (!thread1.isAlive) {
-                    val thread2 = Thread {
-                        requestData()
-                        loadData()
-                    }
-                    thread2.start()
+            clearData()
+            if (!thread1.isAlive) {
+                val thread2 = Thread {
+                    requestData()
+                    loadData()
                 }
+                thread2.start()
             }
         }
     }

@@ -55,12 +55,10 @@ class Driver : Fragment() {
         }
 
         fun requestData() {
-            if (drivers == null) {
-                drivers = try {
-                    getDriverStandings()
-                } catch (e: IOException) {
-                    null
-                }
+            drivers = try {
+                getDriverStandings()
+            } catch (e: IOException) {
+                null
             }
         }
 
@@ -81,21 +79,36 @@ class Driver : Fragment() {
             }
         }
 
+        fun clearData() {
+            if (drivers != null) {
+                activity?.runOnUiThread {
+                    driverTitle.text = ""
+                    for (row in rows) {
+                        row.position.text = ""
+                        row.driver.text = ""
+                        row.points.text = ""
+                        row.gained.text = ""
+                    }
+                }
+            }
+        }
+
         val thread1 = Thread {
-            requestData()
+            if (drivers == null) {
+                requestData()
+            }
             loadData()
         }
         thread1.start()
 
         refreshButton.setOnClickListener {
-            if (drivers == null) {
-                if (!thread1.isAlive) {
-                    val thread2 = Thread {
-                        requestData()
-                        loadData()
-                    }
-                    thread2.start()
+            clearData()
+            if (!thread1.isAlive) {
+                val thread2 = Thread {
+                    requestData()
+                    loadData()
                 }
+                thread2.start()
             }
         }
     }

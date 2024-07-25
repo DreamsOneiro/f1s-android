@@ -18,6 +18,7 @@ import okio.IOException
 import raceObjects.Race
 import raceObjects.getRaceList
 import raceObjects.localDT
+import raceObjects.tzRefresh
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -155,6 +156,7 @@ class Schedule : Fragment() {
 
         buttonRefresh.setOnClickListener {
             offset = 0
+            tzRefresh()
             if (!thread1.isAlive) {
                 if (races == null) {
                     val thread2 = Thread {
@@ -165,6 +167,7 @@ class Schedule : Fragment() {
                 } else {
                     calculate()
                     dropDownList.setSelection(index+offset)
+                    loadData(offset)
                 }
             }
         }

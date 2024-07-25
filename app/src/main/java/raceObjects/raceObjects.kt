@@ -18,7 +18,7 @@ private val client =  OkHttpClient()
 
 val f1dbURL = "https://raw.githubusercontent.com/DreamsOneiro/f1s-api/main/f1db.json"
 @RequiresApi(Build.VERSION_CODES.O)
-val localZoneId = ZonedDateTime.now().zone
+var localZoneId: ZoneId = ZonedDateTime.now().zone
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getRaceList(): List<Race> {
@@ -50,6 +50,11 @@ fun toRaceList(raceJson: String): List<Race> {
 fun localDT(dt: ZonedDateTime?): String {
     val printFormat = DateTimeFormatter.ofPattern("MMM dd (eee) | h:mma '['O']'")
     return dt!!.withZoneSameInstant(localZoneId).format(printFormat).toString()
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun tzRefresh() {
+    localZoneId = ZonedDateTime.now().zone
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
